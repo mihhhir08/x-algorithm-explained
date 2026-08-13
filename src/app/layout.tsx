@@ -30,7 +30,7 @@ const jetbrainsMono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://x-algorithm-explained.vercel.app"),
+  metadataBase: new URL("https://x-algorithm-explained-ten.vercel.app"),
   title: "Why am I seeing this? — The X algorithm, explained",
   description:
     "A short, visual guide to how X decides what goes in your For You feed — drawn from xAI's open-source x-algorithm repository. Unofficial.",

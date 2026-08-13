@@ -6,6 +6,8 @@
 
 Built as a hand-drawn technical zine. Real weights, real stage names, plain English.
 
+### **[→ Open the live page](https://x-algorithm-explained-ten.vercel.app/)**
+
 [![Next.js](https://img.shields.io/badge/Next.js-16-111111?style=flat-square)](https://nextjs.org)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5-111111?style=flat-square)](https://www.typescriptlang.org)
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind-v4-111111?style=flat-square)](https://tailwindcss.com)
