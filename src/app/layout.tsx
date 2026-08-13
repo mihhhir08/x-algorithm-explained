@@ -5,6 +5,7 @@ import {
   Caveat,
   JetBrains_Mono,
 } from "next/font/google";
+import { Analytics } from "@vercel/analytics/next";
 import "./globals.css";
 
 const inter = Inter({
@@ -60,6 +61,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
           <style>{`.rise{opacity:1;transform:none}.ink-path{stroke-dashoffset:0}.swipe-draw::before{clip-path:polygon(1% 6%,99% 0%,100% 88%,97% 100%,3% 96%,0% 40%)}`}</style>
         </noscript>
         {children}
+        <Analytics />
       </body>
     </html>
   );
