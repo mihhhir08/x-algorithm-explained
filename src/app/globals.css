@@ -1,0 +1,308 @@
+@import "tailwindcss";
+
+/* ============================================================
+   THE MARKER ZINE — design system
+   A hand-drawn technical zine. Cream photocopy paper, marker ink,
+   three flat highlighter accents, and real code taped in.
+   ============================================================ */
+
+@theme {
+  --color-paper: #fff8e8;
+  --color-paper-deep: #f7eed6;
+  --color-ink: #111111;
+  --color-ink-soft: #3d3934;
+  --color-ink-faint: #6b655c;
+  --color-hl-yellow: #ffe84d;
+  --color-hl-pink: #ff6fae;
+  --color-hl-teal: #2dd4bf;
+
+  --font-marker: var(--font-permanent-marker), "Comic Sans MS", cursive;
+  --font-hand: var(--font-caveat), "Comic Sans MS", cursive;
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-jetbrains-mono), ui-monospace, monospace;
+
+  --ease-zine: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+:root {
+  color-scheme: light;
+}
+
+/* ---------- page ground ---------- */
+
+body {
+  background-color: var(--color-paper);
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+  /* photocopy grain: fine halftone dots + a faint uneven toner wash */
+  background-image:
+    radial-gradient(
+      circle at center,
+      rgba(17, 17, 17, 0.055) 0.6px,
+      transparent 0.7px
+    ),
+    radial-gradient(
+      ellipse 80% 50% at 20% 0%,
+      rgba(17, 17, 17, 0.035),
+      transparent 60%
+    ),
+    radial-gradient(
+      ellipse 60% 40% at 90% 30%,
+      rgba(17, 17, 17, 0.03),
+      transparent 60%
+    );
+  background-size:
+    4px 4px,
+    100% 100%,
+    100% 100%;
+  overflow-x: hidden;
+}
+
+/* ---------- browser surfaces wear the design too ---------- */
+
+::selection {
+  background: var(--color-hl-yellow);
+  color: var(--color-ink);
+}
+
+::-webkit-scrollbar {
+  width: 13px;
+  height: 13px;
+}
+::-webkit-scrollbar-track {
+  background: var(--color-paper-deep);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--color-ink);
+  border: 3px solid var(--color-paper-deep);
+  border-radius: 999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-ink-soft);
+}
+
+* {
+  scrollbar-color: var(--color-ink) var(--color-paper-deep);
+}
+
+:focus-visible {
+  outline: 3px solid var(--color-hl-teal);
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+
+a {
+  text-underline-offset: 4px;
+  text-decoration-thickness: 2px;
+}
+
+/* ---------- textures ---------- */
+
+.tex-dots {
+  background-image: radial-gradient(
+    circle at center,
+    rgba(17, 17, 17, 0.16) 0.9px,
+    transparent 1px
+  );
+  background-size: 6px 6px;
+}
+
+/* toner-heavy edge, like a page pressed against the platen */
+.tex-vignette::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(
+    ellipse 130% 120% at 50% 50%,
+    transparent 55%,
+    rgba(17, 17, 17, 0.07) 100%
+  );
+}
+
+/* ---------- marker type ---------- */
+
+.marker {
+  font-family: var(--font-marker);
+  font-weight: 400;
+  letter-spacing: -0.01em;
+  line-height: 0.94;
+  text-transform: uppercase;
+}
+
+.hand {
+  font-family: var(--font-hand);
+  font-weight: 700;
+  letter-spacing: 0.005em;
+}
+
+/* Permanent Marker is drawn slightly high in its em box; nudge optically */
+.marker-lift {
+  transform: translateY(0.06em);
+}
+
+/* ---------- highlighter swipe ---------- */
+
+.swipe {
+  position: relative;
+  display: inline-block;
+  isolation: isolate;
+  padding-inline: 0.14em;
+}
+.swipe::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  left: -0.06em;
+  right: -0.06em;
+  top: 12%;
+  bottom: 8%;
+  background: var(--swipe-color, var(--color-hl-yellow));
+  /* torn, uneven marker ends */
+  clip-path: polygon(
+    1% 6%,
+    99% 0%,
+    100% 88%,
+    97% 100%,
+    3% 96%,
+    0% 40%
+  );
+  transform: rotate(-0.5deg);
+  transform-origin: left center;
+  transition: clip-path 0.5s var(--ease-zine);
+}
+
+/* animated swipe: paints itself on when revealed */
+.swipe-draw::before {
+  clip-path: polygon(1% 6%, 1% 0%, 1% 88%, 1% 100%, 1% 96%, 0% 40%);
+}
+.is-revealed .swipe-draw::before {
+  clip-path: polygon(1% 6%, 99% 0%, 100% 88%, 97% 100%, 3% 96%, 0% 40%);
+}
+
+/* ---------- draw-on ink ---------- */
+
+.ink-path {
+  stroke-dasharray: var(--len, 1200);
+  stroke-dashoffset: var(--len, 1200);
+  transition: stroke-dashoffset 1.1s var(--ease-zine);
+}
+.is-revealed .ink-path {
+  stroke-dashoffset: 0;
+}
+
+/* staggered reveal for grouped panels */
+.rise {
+  opacity: 0;
+  transform: translateY(14px);
+  transition:
+    opacity 0.6s var(--ease-zine),
+    transform 0.6s var(--ease-zine);
+  transition-delay: var(--delay, 0ms);
+}
+.is-revealed .rise,
+.is-revealed.rise {
+  opacity: 1;
+  transform: none;
+}
+
+/* ---------- tape ---------- */
+
+.tape {
+  position: absolute;
+  width: 108px;
+  height: 30px;
+  background: rgba(255, 232, 77, 0.62);
+  border-left: 1px dashed rgba(17, 17, 17, 0.18);
+  border-right: 1px dashed rgba(17, 17, 17, 0.18);
+  box-shadow: 0 1px 3px rgba(17, 17, 17, 0.14);
+  backdrop-filter: saturate(0.8);
+}
+
+/* ---------- marker sliders ---------- */
+
+.zine-range {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 26px;
+  background: transparent;
+  cursor: grab;
+}
+.zine-range:active {
+  cursor: grabbing;
+}
+
+.zine-range::-webkit-slider-runnable-track {
+  height: 8px;
+  border-radius: 999px;
+  background:
+    repeating-linear-gradient(
+      90deg,
+      rgba(17, 17, 17, 0.5) 0 6px,
+      transparent 6px 10px
+    ),
+    var(--color-paper-deep);
+  border: 2px solid var(--color-ink);
+}
+.zine-range::-moz-range-track {
+  height: 8px;
+  border-radius: 999px;
+  background:
+    repeating-linear-gradient(
+      90deg,
+      rgba(17, 17, 17, 0.5) 0 6px,
+      transparent 6px 10px
+    ),
+    var(--color-paper-deep);
+  border: 2px solid var(--color-ink);
+}
+
+.zine-range::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 26px;
+  height: 26px;
+  margin-top: -11px;
+  border-radius: 50% 48% 52% 50% / 50% 52% 48% 50%;
+  background: var(--thumb, var(--color-hl-yellow));
+  border: 2.5px solid var(--color-ink);
+  box-shadow: 1px 2px 4px rgba(17, 17, 17, 0.24);
+  transition: transform 0.18s var(--ease-zine);
+}
+.zine-range::-moz-range-thumb {
+  width: 26px;
+  height: 26px;
+  border-radius: 50% 48% 52% 50% / 50% 52% 48% 50%;
+  background: var(--thumb, var(--color-hl-yellow));
+  border: 2.5px solid var(--color-ink);
+  box-shadow: 1px 2px 4px rgba(17, 17, 17, 0.24);
+}
+.zine-range:hover::-webkit-slider-thumb,
+.zine-range:focus-visible::-webkit-slider-thumb {
+  transform: scale(1.14) rotate(-6deg);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ink-path {
+    stroke-dashoffset: 0 !important;
+    transition: none !important;
+  }
+  .rise {
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
+  }
+  .swipe-draw::before {
+    clip-path: polygon(1% 6%, 99% 0%, 100% 88%, 97% 100%, 3% 96%, 0% 40%) !important;
+    transition: none !important;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
